@@ -3,7 +3,10 @@
 // Adding libraries
 const express = require('express') // Framework
 const bodyParser = require('body-parser') // Middleware
-const mongoose = require('mongoose')
+const mongoose = require('mongoose') // Allows data base changes
+
+// Includes the model
+const Product = require('./models/product')
 
 const app =  express() // Creates the app
 const port = process.env.PORT || 3000 // Asignes the port number
@@ -30,8 +33,26 @@ app.get('/api/product/:productId', (req, res) => {
 })
 
 app.post('/api/product', (req, res) => {
+	/*
 	console.log(req.body)
 	res.status(200).send({ message: 'The product has been received' })
+	*/
+	console.log('POST /api/product')
+	console.log(req.body)
+
+	// Save into he database
+	let product = new Product()
+	product.name = req.body.name
+	product.picture = req.body.picture
+	product.price = req.body.price
+	product.category = req.body.category
+	product.description = req.body.description
+
+	product.save((err, productStored) => {
+		if (err) res.status(500).send({ message: `An error has had produced while saving the product ${err}` })
+
+		res.status(200).send({ product: productStored })
+	})
 })
 
 app.put('/api/product/:productId', (req, res) => {
