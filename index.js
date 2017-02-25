@@ -25,11 +25,23 @@ app.get('/hello/:name', (req, res) => {
 
 // Routes
 app.get('/api/product', (req, res) => {
-	res.send(200, { products: [] })
+	Product.find({}, (err, products) => {
+		if (err) res.status(500).send({ message: `Error while making the petition: ${err}` })
+		if (!products) return res.status(404).send({ message: `The product's list does not exist` })
+
+		res.send(200, { products })
+	})
 })
 
 app.get('/api/product/:productId', (req, res) => {
+	let productID = req.params.productId
 	
+	Product.findById(productID, (err, product) => {
+		if (err) res.status(500).send({ message: `Error while making the petition: ${err}` })
+		if (!product) return res.status(404).send({ message: `The product does not exist` })
+
+		res.status(200).send({ product })
+	})
 })
 
 app.post('/api/product', (req, res) => {
@@ -49,7 +61,7 @@ app.post('/api/product', (req, res) => {
 	product.description = req.body.description
 
 	product.save((err, productStored) => {
-		if (err) res.status(500).send({ message: `An error has had produced while saving the product ${err}` })
+		if (err) res.status(500).send({ message: `An error has had produced while saving the product: ${err}` })
 
 		res.status(200).send({ product: productStored })
 	})
