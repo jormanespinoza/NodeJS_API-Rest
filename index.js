@@ -68,11 +68,28 @@ app.post('/api/product', (req, res) => {
 })
 
 app.put('/api/product/:productId', (req, res) => {
+	let productID = req.params.productId
+	let update = req.body
 	
+	Product.findByIdAndUpdate(productID, update, (err, productUpdated) => {
+		if (err) res.status(500).send({ message: `An error has had produced while updating the product: ${err}` })
+
+		res.status(200).send({ product: productUpdated })
+	})
 })
 
-app.delete('/api/product', (req, res) => {
+app.delete('/api/product/:productId', (req, res) => {
+	let productID = req.params.productId
 	
+	Product.findById(productID, (err, product) => {
+		if (err) res.status(500).send({ message: `An error has had produced while deleting the product: ${err}` })
+
+		product.remove(err => {
+			if (err) res.status(500).send({ message: `An error has had produced while deleting the product: ${err}` })
+			res.status(200).send({ message: 'The product has been deleted' })
+		})
+
+	})
 })
 
 // Connecting to the DB
