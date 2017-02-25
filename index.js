@@ -3,9 +3,11 @@
 // Adding libraries
 const express = require('express') // Framework
 const bodyParser = require('body-parser') // Middleware
+const mongoose = require('mongoose')
 
 const app =  express() // Creates the app
 const port = process.env.PORT || 3000 // Asignes the port number
+
 
 // Adding bodyParser
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -40,7 +42,18 @@ app.delete('/api/product', (req, res) => {
 	
 })
 
-// Start server on port 3000
-app.listen(port, () => { // () => It's the same as function () {}
-	console.log(`API REST running into http://localhost:${port}`) // Use invert accents
+// Connecting to the DB
+mongoose.connect('mongodb://localhost:27017/shop', (err, res) => {
+	if (err) {
+		console.log(`Error while connecting to the data base: ${err}`)
+	}else {
+		console.log('Connecting to the established data base...')
+	}
+
+
+	// Start server on port 3000
+	app.listen(port, () => { // () => It's the same as function () {}
+		console.log(`API REST running into http://localhost:${port}`) // Use invert accents
+
+	})
 })
