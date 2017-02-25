@@ -50,7 +50,6 @@ mongoose.connect('mongodb://localhost:27017/shop', (err, res) => {
 		console.log('Connecting to the established data base...')
 	}
 
-
 	// Start server on port 3000
 	app.listen(port, () => { // () => It's the same as function () {}
 		console.log(`API REST running into http://localhost:${port}`) // Use invert accents
